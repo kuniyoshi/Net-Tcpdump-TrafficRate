@@ -22,11 +22,12 @@ our $ip_host_map;
 our $role_prefix;
 our $dumpfile;
 our $cardinal;
+our $verbose;
 
-die "usage: $0 -ip_host_map=<map file> -role_prefix=<prefix file> -dumpfile=<dumpfile> -cardinal=<dumpfile from what host>"
+die "usage: $0 [-verbose] -ip_host_map=<map file> -role_prefix=<prefix file> -dumpfile=<dumpfile> -cardinal=<dumpfile from what host>"
     if !$ip_host_map || !$role_prefix || !$dumpfile || !$cardinal;
 
-$Net::Tcpdump::TrafficRate::VERBOSE = 1;
+$Net::Tcpdump::TrafficRate::VERBOSE = $verbose;
 
 my %host   = read_map( $ip_host_map );
 my %ip     = reverse %host;
@@ -79,7 +80,8 @@ sub get_role {
     my $prefix = first { 0 == index $name, $_ } keys %role;
 
     if ( !$prefix ) {
-        warn "unknown";
+        warn "unknown"
+            if $verbose;
         return "other";
     }
 
